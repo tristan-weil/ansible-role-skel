@@ -1,0 +1,29 @@
+---
+
+- name: update skel files
+  copy:
+    src: "{{ item[0] }}"
+    dest: "{{ item[1].dest }}"
+    owner: "{{ item[1].owner }}"
+    group: "{{ item[1].owner }}"
+    mode: "{{ item[1].mode }}"
+  with_nested:
+    - [ etc/skel/.kshrc, etc/skel/.bashrc, etc/skel/.vimrc ]
+    - [ { dest: /etc/skel/, mode: "0644", owner: root }, { dest: /root/, mode: "0600", owner: root } ]
+
+- name: update root .profile
+  lineinfile:
+    path: "{{ item[0] }}"
+    insertafter: EOF
+    line: "{{ item[1] }}"
+  with_nested:
+    - [ /etc/skel/.profile, /root/.profile ]
+    - [ "ENV=$HOME/.{{ skel_system_shell }}rc" ]
+
+- name: update root .gitconfig
+  template:
+    src: root/.gitconfig.j2
+    dest: /root/.gitconfig
+    owner: root
+    group: root
+    mode: "0600"
