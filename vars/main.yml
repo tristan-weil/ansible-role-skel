@@ -1,0 +1,22 @@
+---
+
+skel_root_dot_profile_files:
+  - /etc/skel/.profile
+  - /root/.profile
+
+skel_root_dot_profile_lines:
+  - ENV=$HOME/.{{ skel_system_shell }}rc
+
+skel_dot_profile_files:
+  - etc/skel/.kshrc
+  - etc/skel/.bashrc
+  - etc/skel/.vimrc
+
+skel_dot_profile_dests:
+  - dest: /etc/skel/
+    mode: "0644"
+    owner: root
+
+  - dest: /root/
+    mode: "0600"
+    owner: root

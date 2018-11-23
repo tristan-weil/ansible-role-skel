@@ -7,31 +7,14 @@
     owner: "{{ item[1].owner }}"
     group: "{{ item[1].owner }}"
     mode: "{{ item[1].mode }}"
-  with_nested:
-    -
-      - etc/skel/.kshrc
-      - etc/skel/.bashrc
-      - etc/skel/.vimrc
-
-    -
-      - dest: /etc/skel/
-        mode: "0644"
-        owner: root
-      - dest: /root/
-        mode: "0600"
-        owner: root
+  loop: "{{ skel_dot_profile_files | product(skel_dot_profile_dests) | list }}"
 
 - name: update root .profile
   lineinfile:
     path: "{{ item[0] }}"
     insertafter: EOF
     line: "{{ item[1] }}"
-  with_nested:
-    -
-      - /etc/skel/.profile
-      - /root/.profile
-    -
-      - "ENV=$HOME/.{{ skel_system_shell }}rc"
+  loop: "{{ skel_root_dot_profile_files | product(skel_root_dot_profile_lines) | list }}"
 
 - name: update root .gitconfig
   template:
