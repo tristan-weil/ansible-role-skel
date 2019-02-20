@@ -1,7 +1,6 @@
 ---
 
 skel_root_dot_profile_files:
-  - /etc/skel/.profile
   - /root/.profile
 
 skel_root_dot_profile_lines:
