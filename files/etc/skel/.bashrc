@@ -20,10 +20,22 @@ __prompt_command() {
 
     if [[ $(id -u) == "0" ]]; then
         umask 022
-        PS1="\n\[\e[1;33m\]\t \[\e[1;31m\]\u\[\e[0m\]@\[\e[1;31m\]\h \[\e[0;31m\]\w \[\e[0;33m\][$EXIT]\n\[\e[1;31m\]> \[\e[0m\]"
+        if [[ $(type git) ]]; then
+            export GIT_PS1_SHOWDIRTYSTATE=true
+            export GIT_PS1_SHOWUNTRACKEDFILES=true
+            PS1="\n\[\e[1;33m\]\t \[\e[1;31m\]\u\[\e[0m\]@\[\e[1;31m\]\h \[\e[0;31m\]\w \[\033[01;31m\]$(__git_ps1 '(%s) ')\[\e[0;33m\][$EXIT]\n\[\e[1;31m\]> \[\e[0m\]"
+        else
+            PS1="\n\[\e[1;33m\]\t \[\e[1;31m\]\u\[\e[0m\]@\[\e[1;31m\]\h \[\e[0;31m\]\w \[\e[0;33m\][$EXIT]\n\[\e[1;31m\]> \[\e[0m\]"
+        fi
     else
         umask 027
-        PS1="\n\[\e[1;33m\]\t \[\e[1;32m\]\u\[\e[0m\]@\[\e[1;35m\]\h \[\e[1;36m\]\w \[\e[0;33m\][$EXIT]\[\e[0m\]\n\[\e[1;32m\]$ \[\e[0m\]"
+        if [[ $(type git) ]]; then
+            export GIT_PS1_SHOWDIRTYSTATE=true
+            export GIT_PS1_SHOWUNTRACKEDFILES=true
+            PS1="\n\[\e[1;33m\]\t \[\e[1;32m\]\u\[\e[0m\]@\[\e[1;35m\]\h \[\e[1;36m\]\w \[\033[01;31m\]$(__git_ps1 '(%s) ')\[\e[0;33m\][$EXIT]\[\e[0m\]\n\[\e[1;32m\]$ \[\e[0m\]"
+        else
+            PS1="\n\[\e[1;33m\]\t \[\e[1;32m\]\u\[\e[0m\]@\[\e[1;35m\]\h \[\e[1;36m\]\w \[\e[0;33m\][$EXIT]\[\e[0m\]\n\[\e[1;32m\]$ \[\e[0m\]"
+        fi
     fi
 }
 
