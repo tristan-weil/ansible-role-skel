@@ -22,7 +22,7 @@ __prompt_command() {
 
     if [[ $(id -u) == "0" ]]; then
         umask 022
-        if [[ $(type git) ]]; then
+        if type git >/dev/null 2>&1; then
             export GIT_PS1_SHOWDIRTYSTATE=true
             export GIT_PS1_SHOWUNTRACKEDFILES=true
             PS1="\n\[\e[1;33m\]\t \[\e[1;31m\]\u\[\e[0m\]@\[\e[1;31m\]\h \[\e[0;31m\]\w \[\033[01;31m\]$(__git_ps1 '(%s) ')\[\e[0;33m\][$EXIT]\n\[\e[1;31m\]> \[\e[0m\]"
@@ -31,7 +31,7 @@ __prompt_command() {
         fi
     else
         umask 027
-        if [[ $(type git) ]]; then
+        if type git >/dev/null 2>&1; then
             export GIT_PS1_SHOWDIRTYSTATE=true
             export GIT_PS1_SHOWUNTRACKEDFILES=true
             git_prompt="\[\033[01;31m\]$(__git_ps1 '(%s) ')"
