@@ -1,8 +1,5 @@
 ---
 
-dependency:
-  name: 'galaxy'
-
 driver:
   name: 'vagrant'
   provider:
@@ -15,12 +12,8 @@ lint: |
   flake8 .
 
 platforms:
-  - name: 'Debian'
+  - name: 'target-debian-${MOLECULE_INSTANCE_NAME_ID:-1}'
     box: 'generic/debian10'
-
-  - name: 'OpenBSD'
-    box: 'generic/openbsd6'
-    boot_timeout: 600
 
 provisioner:
   name: 'ansible'

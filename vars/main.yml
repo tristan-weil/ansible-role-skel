@@ -25,16 +25,16 @@ _skel_dot_profile_dests:
     owner: 'root'
     group: "{{ _skel_root_group }}"
 
-_skel_root_group: "{{ _skel_root_group_by_distribution[ ansible_facts['distribution'] ] }}"
-_skel_system_shell_default: "{{ _skel_system_shell_by_distribution[ ansible_facts['distribution'] ] }}"
+_skel_root_group: "{{ _skel_root_group_by_os_family[ ansible_facts['os_family'] ] }}"
+_skel_system_shell_default: "{{ _skel_system_shell_by_os_family[ ansible_facts['os_family'] ] }}"
 
 ##############################################################################
 # Distributions' dictionaries
 ##############################################################################
-_skel_system_shell_by_distribution:
+_skel_system_shell_by_os_family:
   Debian: 'bash'
   OpenBSD: 'ksh'
 
-_skel_root_group_by_distribution:
+_skel_root_group_by_os_family:
   Debian: 'root'
   OpenBSD: 'wheel'
