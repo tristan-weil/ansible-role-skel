@@ -1,0 +1,44 @@
+---
+
+dependency:
+  name: 'galaxy'
+  options:
+    role-file: 'molecule/resources/requirements.yml'
+
+driver:
+  name: 'docker'
+
+lint: |
+  set -e
+  yamllint --config-file yamllint .
+  ansible-lint -c .ansible-lint .
+  flake8 --config molecule/resources/flake8
+
+platforms:
+  - name: 'target'
+    image: '${MOLECULE_LINUX_DISTRIBUTION:-geerlingguy/docker-debian10-ansible:latest}'
+    command: ""
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: True
+    pre_build_image: True
+    network_mode: host
+
+provisioner:
+  name: 'ansible'
+  playbooks:
+    prepare: '../resources/playbooks/prepare.yml'
+    converge: '../resources/playbooks/playbook.yml'
+  inventory:
+    host_vars:
+      all:
+        ansible_python_interpreter: '/usr/bin/python3'
+  options:
+    D: True
+  log: True
+
+verifier:
+  name: 'testinfra'
+  directory: '../resources/tests/'
+  options:
+    sudo: True

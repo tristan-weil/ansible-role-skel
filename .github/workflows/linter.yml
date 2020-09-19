@@ -1,0 +1,25 @@
+name: linter
+
+on:
+  push: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Liny yaml
+        uses: karancode/yamllint-github-action@master
+        with:
+          yamllint_file_or_dir: "."
+
+      - name: Lint Ansible
+        # replace "master" with any valid ref
+        uses: ansible/ansible-lint-action@master
+        with:
+          targets: "."
+          override-deps: |
+            ansible==2.9

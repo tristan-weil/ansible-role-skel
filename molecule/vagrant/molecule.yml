@@ -1,0 +1,46 @@
+---
+
+dependency:
+  name: 'galaxy'
+  options:
+    role-file: 'molecule/resources/requirements.yml'
+
+driver:
+  name: 'vagrant'
+  provider:
+    name: 'virtualbox'
+
+lint: |
+  set -e
+  yamllint --config-file yamllint .
+  ansible-lint -c .ansible-lint .
+  flake8 --config molecule/resources/flake8
+
+platforms:
+  - name: 'Debian'
+    box: 'generic/debian10'
+
+  - name: 'OpenBSD'
+    box: 'generic/openbsd6'
+    boot_timeout: 600
+
+provisioner:
+  name: 'ansible'
+  playbooks:
+    prepare: '../resources/playbooks/prepare.yml'
+    converge: '../resources/playbooks/playbook.yml'
+  inventory:
+    host_vars:
+      Debian:
+        ansible_python_interpreter: '/usr/bin/python3'
+      OpenBSD:
+        ansible_python_interpreter: '/usr/local/bin/python3'
+  options:
+    D: True
+  log: True
+
+verifier:
+  name: 'testinfra'
+  directory: '../resources/tests/'
+  options:
+    sudo: True

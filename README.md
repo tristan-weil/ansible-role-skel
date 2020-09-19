@@ -1,4 +1,4 @@
-# Ansible Role: chroot
+# Ansible Role: skel
 
 An Ansible Role to configure the system skel files (/etc/skel) and update the root ones.
 
@@ -8,9 +8,16 @@ A `/root/.gitconfig` file is also created to avoid errors if the package `etckee
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
-    skel_system_shell: bash             # the shell to use by default
+Mandatory variables:
 
-The shell to use by default by all new users.
+| Variable      | Description |
+| :------------ | :---------- |
+
+Optional variables:
+
+| Variable      | Default | Description |
+| :------------ | :------ | :---------- |
+| skel_system_shell | bash        | the shell to use by default by new users |
 
 ## Dependencies
 
@@ -18,9 +25,9 @@ None.
 
 ## Example Playbook
 
-    - hosts: webservers
+    - hosts: 'webservers'
       roles:
-        - role: t18s.fr_skell
+        - role: 'ansible-role-skell'
           skel_system_shell: ksh
 
 ## Todo
@@ -30,7 +37,7 @@ None.
 ## License
 
 ```
-Copyright (c) 2018, 2019 Tristan Weil <titou@lab.t18s.fr>
+Copyright (c) 2018, 2019, 2020 Tristan Weil <titou@lab.t18s.fr>
 
 Permission to use, copy, modify, and distribute this software for any
 purpose with or without fee is hereby granted, provided that the above

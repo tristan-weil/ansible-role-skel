@@ -3,22 +3,38 @@
 ##############################################################################
 # Variables
 ##############################################################################
-skel_root_dot_profile_files:
-  - /root/.profile
+_skel_root_dot_profile_files:
+  - '/root/.profile'
 
-skel_root_dot_profile_lines:
-  - ENV=$HOME/.{{ skel_system_shell }}rc
+_skel_root_dot_profile_lines:
+  - "ENV=$HOME/.{{ skel_system_shell }}rc"
 
-skel_dot_profile_files:
-  - etc/skel/.kshrc
-  - etc/skel/.bashrc
-  - etc/skel/.vimrc
+_skel_dot_profile_files:
+  - 'etc/skel/.kshrc'
+  - 'etc/skel/.bashrc'
+  - 'etc/skel/.vimrc'
 
-skel_dot_profile_dests:
-  - dest: /etc/skel/
-    mode: "0644"
-    owner: root
+_skel_dot_profile_dests:
+  - dest: '/etc/skel/'
+    mode: '0644'
+    owner: 'root'
+    group: "{{ _skel_root_group }}"
 
-  - dest: /root/
-    mode: "0600"
-    owner: root
+  - dest: '/root/'
+    mode: '0600'
+    owner: 'root'
+    group: "{{ _skel_root_group }}"
+
+_skel_root_group: "{{ _skel_root_group_by_distribution[ ansible_facts['distribution'] ] }}"
+_skel_system_shell_default: "{{ _skel_system_shell_by_distribution[ ansible_facts['distribution'] ] }}"
+
+##############################################################################
+# Distributions' dictionaries
+##############################################################################
+_skel_system_shell_by_distribution:
+  Debian: 'bash'
+  OpenBSD: 'ksh'
+
+_skel_root_group_by_distribution:
+  Debian: 'root'
+  OpenBSD: 'wheel'

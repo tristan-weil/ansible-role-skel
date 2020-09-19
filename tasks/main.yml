@@ -1,25 +1,44 @@
 ---
 
-- name: update skel files
+- name: 'create completion dir'
+  file:
+    path: '/usr/local/share/shell-completions'
+    owner: 'root'
+    group: "{{ _skel_root_group }}"
+    mode: '0755'
+    state: 'directory'
+
+- name: 'copy completion scripts'
+  copy:
+    src: "usr/local/share/shell-completions/{{ item }}"
+    dest: "/usr/local/share/shell-completions/{{ item }}"
+    owner: 'root'
+    group: "{{ _skel_root_group }}"
+    mode: '0755'
+  loop:
+    - 'git-prompt-bash-zsh.sh'
+    - 'git-prompt-ksh.sh'
+
+- name: 'update skel files'
   copy:
     src: "{{ item[0] }}"
     dest: "{{ item[1].dest }}"
     owner: "{{ item[1].owner }}"
-    group: "{{ item[1].owner }}"
+    group: "{{ item[1].group }}"
     mode: "{{ item[1].mode }}"
-  loop: "{{ skel_dot_profile_files | product(skel_dot_profile_dests) | list }}"
+  loop: "{{ _skel_dot_profile_files | product(_skel_dot_profile_dests) | list }}"
 
-- name: update root .profile
+- name: 'update root .profile'
   lineinfile:
     path: "{{ item[0] }}"
-    insertafter: EOF
+    insertafter: 'EOF'
     line: "{{ item[1] }}"
-  loop: "{{ skel_root_dot_profile_files | product(skel_root_dot_profile_lines) | list }}"
+  loop: "{{ _skel_root_dot_profile_files | product(_skel_root_dot_profile_lines) | list }}"
 
-- name: update root .gitconfig
+- name: 'update root .gitconfig'
   template:
-    src: root/.gitconfig.j2
-    dest: /root/.gitconfig
-    owner: root
-    group: root
-    mode: "0600"
+    src: 'root/.gitconfig.j2'
+    dest: '/root/.gitconfig'
+    owner: 'root'
+    group: "{{ _skel_root_group }}"
+    mode: '0600'

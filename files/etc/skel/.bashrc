@@ -7,6 +7,10 @@ elif [ -e /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+if [ -e /usr/local/share/shell-completions/git-prompt-bash-zsh.sh ]; then
+    . /usr/local/share/shell-completions/git-prompt-bash-zsh.sh
+fi
+
 # History
 HISTCONTROL=ignoreboth
 shopt -s histappend
@@ -20,25 +24,21 @@ __prompt_command() {
     local venv_prompt=""
     PS1=""
 
+    if type git >/dev/null 2>&1; then
+        export GIT_PS1_SHOWDIRTYSTATE=true
+        export GIT_PS1_SHOWUNTRACKEDFILES=true
+        git_prompt="\[\033[01;31m\]$(__git_ps1 '(%s) ')"
+    fi
+    if [[ ! -z $VIRTUAL_ENV ]]; then
+        venv_prompt="\[\e[0m\]($(basename $VIRTUAL_ENV)) "
+    fi
+
     if [[ $(id -u) == "0" ]]; then
         umask 022
-        if type git >/dev/null 2>&1; then
-            export GIT_PS1_SHOWDIRTYSTATE=true
-            export GIT_PS1_SHOWUNTRACKEDFILES=true
-            PS1="\n\[\e[1;33m\]\t \[\e[1;31m\]\u\[\e[0m\]@\[\e[1;31m\]\h \[\e[0;31m\]\w \[\033[01;31m\]$(__git_ps1 '(%s) ')\[\e[0;33m\][$EXIT]\n\[\e[1;31m\]> \[\e[0m\]"
-        else
-            PS1="\n\[\e[1;33m\]\t \[\e[1;31m\]\u\[\e[0m\]@\[\e[1;31m\]\h \[\e[0;31m\]\w \[\e[0;33m\][$EXIT]\n\[\e[1;31m\]> \[\e[0m\]"
-        fi
+
+        PS1="\n\[\e[1;33m\]\t ${venv_prompt}\[\e[1;31m\]\u\[\e[0m\]@\[\e[1;31m\]\h \[\e[0;31m\]\w ${git_prompt}\[\e[0;33m\][$EXIT]\n\[\e[1;31m\]> \[\e[0m\]"
     else
         umask 027
-        if type git >/dev/null 2>&1; then
-            export GIT_PS1_SHOWDIRTYSTATE=true
-            export GIT_PS1_SHOWUNTRACKEDFILES=true
-            git_prompt="\[\033[01;31m\]$(__git_ps1 '(%s) ')"
-        fi
-        if [[ ! -z $VIRTUAL_ENV ]]; then
-            venv_prompt="\[\e[0m\]($(basename $VIRTUAL_ENV)) "
-        fi
 
         PS1="\n\[\e[1;33m\]\t ${venv_prompt}\[\e[1;32m\]\u\[\e[0m\]@\[\e[1;35m\]\h \[\e[1;36m\]\w ${git_prompt}\[\e[0;33m\][$EXIT]\[\e[0m\]\n\[\e[1;32m\]$ \[\e[0m\]"
     fi
@@ -47,12 +47,12 @@ __prompt_command() {
 PROMPT_COMMAND=__prompt_command
 
 # Aliases
-if which colorls >/dev/null; then
+if which colorls >/dev/null 2>&1; then
     alias ls="/usr/local/bin/colorls -F"
 fi
 
 # enable color support of ls and also add handy aliases
-if which dircolors >/dev/null; then
+if which dircolors >/dev/null 2>&1; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
     alias dir='dir --color=auto'
