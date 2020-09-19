@@ -53,3 +53,5 @@ rules:
   trailing-spaces: enable
   truthy:
     allowed-values: ["True", "False"]
+    ignore: |
+      .github/workflows

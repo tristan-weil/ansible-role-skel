@@ -1,0 +1,13 @@
+---
+
+- hosts: all
+  name: 'Converge'
+  become: True
+
+  tasks:
+
+    - systemd:
+        daemon_reload: True
+
+    - import_role:
+        name: 'ansible-role-skel'

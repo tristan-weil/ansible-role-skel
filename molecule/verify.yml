@@ -1,0 +1,26 @@
+---
+
+- hosts: all
+  name: 'Verify'
+  become: True
+  gather_facts: True
+
+  tasks:
+    - name: 'Retrieve files stat'
+      stat:
+        path: "{{ item }}"
+      register: __verify_files
+      loop:
+        - '/root/.gitconfig'
+        - '/root/.kshrc'
+        - '/root/.bashrc'
+        - '/root/.vimrc'
+        - '/etc/skel/.kshrc'
+        - '/etc/skel/.bashrc'
+        - '/etc/skel/.vimrc'
+
+    - name: 'Check files exist'
+      assert:
+        that:
+          - item.stat.exists
+      loop: "{{ __verify_files.results }}"

@@ -1,0 +1,24 @@
+---
+
+name: molecule
+
+on: [push, pull_request]
+
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        run: |
+          docker pull quay.io/ansible/molecule
+
+      - name: Test with molecule
+        run: |
+          docker run --rm -it -v "$(pwd)":/tmp/$(basename "${PWD}"):ro \
+                              -v /var/run/docker.sock:/var/run/docker.sock \
+                              -w /tmp/$(basename "${PWD}")
+                              quay.io/ansible/molecule:3.0.8 molecule test -s docker

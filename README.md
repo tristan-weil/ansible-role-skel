@@ -19,10 +19,6 @@ Optional variables:
 | :------------ | :------ | :---------- |
 | skel_system_shell | bash        | the shell to use by default by new users |
 
-## Dependencies
-
-None.
-
 ## Example Playbook
 
     - hosts: 'webservers'

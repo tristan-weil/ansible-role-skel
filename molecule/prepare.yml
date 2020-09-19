@@ -1,7 +1,7 @@
 ---
 
-- name: 'Prepare'
-  hosts: 'all'
+- hosts: all
+  name: 'Prepare'
   become: True
   gather_facts: False
 
